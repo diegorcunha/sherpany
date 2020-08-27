@@ -27,6 +27,6 @@ jobs:
         env:
           CLOUDSCALE_TOKEN: ${{ secrets.CLOUDSCALE_TOKEN }}
         run: |
-          sudo export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
+          export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
           sudo ./deployment.sh dev-environment.tfvars
           
