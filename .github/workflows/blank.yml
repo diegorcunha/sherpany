@@ -24,6 +24,9 @@ jobs:
           terraform plan -var-file=env/dev-environment.tfvars
 
       - name: Deploy the Kubernetes Cluster
+        env:
+          CLOUDSCALE_TOKEN: ${{ secrets.CLOUDSCALE_TOKEN }}
         run: |
+          export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
           ./deployment.sh dev-environment.tfvars
           
