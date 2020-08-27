@@ -1,0 +1,23 @@
+
+name: CI
+
+on:
+  pull_request:
+    branches: [ develop ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate the Terraform code
+        env:
+          CLOUDSCALE_TOKEN: ${{ secrets.CLOUDSCALE_TOKEN }}
+        run: |
+          export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
+          cd terraform-infrastructure
+          terraform plan -var-file=env/dev-environment.tfvars
+
+      - name: Deploy the Kubernetes Cluster
+        run: |
+          ./deployment.sh dev-environment.tfvars
+          
