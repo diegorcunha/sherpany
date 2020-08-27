@@ -23,15 +23,34 @@ jobs:
           cd terraform-infrastructure
           terraform init
           terraform plan -var-file=env/dev-environment.tfvars
-          terraform apply -var-file=env/dev-environment.tfvars -auto-approve
-          cd ../ansible-k8s
-          ansible-playbook setup_master_node.yml
-          ansible-playbook setup_worker_nodes.yml
-          ansible-playbook deploy-hello-world.yml
-          cd ../ansible-haproxy
-          ansible-playbook deploy-haproxy.yml
+          terraform apply -var-file=env/dev-environment.tfvars -auto-approve          
+
+      - name: Run playbook Kubernetes Master
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: setup_master_node.yml
+          directory: ansible-k8s
+          key: ${{secrets.SSH_KEY}}
           
-
-
       
-          
+      - name: Run playbook Kubernetes Nodes
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: setup_worker_nodes.yml
+          directory: ansible-k8s
+          key: ${{secrets.SSH_KEY}}    
+
+      - name: Run playbook Hello World
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: deploy-hello-world.yml
+          directory: ansible-k8s
+          key: ${{secrets.SSH_KEY}}   
+        
+      
+      - name: Run playbook HAProxy
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: deploy-haproxy.yml
+          directory: ansible-haproxy
+          key: ${{secrets.SSH_KEY}}  
