@@ -4,8 +4,6 @@ name: CI
 on:
   pull_request:
     branches: [ develop ]
-  push:
-    branches: [ develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +15,7 @@ jobs:
         run: |
           export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
           cd terraform-infrastructure
+          terraform init
           terraform plan -var-file=env/dev-environment.tfvars
 
       - name: Deploy the Kubernetes Cluster
