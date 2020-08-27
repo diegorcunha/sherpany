@@ -1,0 +1,142 @@
+---
+- hosts: masters
+  become: true
+  become_user: root
+  tasks:
+  - name: Install packages that allow apt to be used over HTTPS
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - helm
+    run_once: True
+
+  - name: Add an apt signing key for Docker
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+    run_once: True
+
+  - name: Add apt repository for stable version
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      state: present
+    run_once: True
+
+  - name: Install docker and its dependecies
+    become: true
+    become_user: root
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io
+    notify:
+      - docker status
+    run_once: True
+
+  - name: Remove swapfile from /etc/fstab
+    become: true
+    become_user: root
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+      - none
+
+  - name: Disable swap
+    become: true
+    become_user: root
+    command: swapoff -a
+    when: ansible_swaptotal_mb > 0
+  
+  - name: Add an apt signing key for Kubernetes
+    become: true
+    become_user: root
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Adding apt repository for Kubernetes
+    become: true
+    become_user: root
+    apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes.list
+
+  - name: Install Kubernetes binaries
+    become: true
+    become_user: root
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - kubelet 
+        - kubeadm 
+        - kubectl
+    register: installed
+
+  - name: Restart kubelet
+    become: true
+    become_user: root
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+  
+  - name: Initialize the Kubernetes cluster using kubeadm
+    become: true
+    become_user: root
+    command: kubeadm init
+    when: installed is changed
+    run_once: True
+
+  - name: Setup kubeconfig
+    become: true
+    become_user: root
+    command: "{{ item }}"
+    with_items:
+     - mkdir -p $HOME/.kube
+     - cp /etc/kubernetes/admin.conf $HOME/.kube/config
+    run_once: True
+
+  - name: Install calico pod network
+    become: true
+    become_user: root
+    command: kubectl apply -f https://docs.projectcalico.org/v3.10/manifests/calico.yaml
+
+  - name: Generate join command
+    become: true
+    become_user: root
+    command: kubeadm token create --print-join-command
+    register: join_command
+    run_once: True
+
+  - name: Copy join command to local file
+    become: true
+    become_user: root
+    copy: 
+      dest: "join" 
+      content: "{{ join_command.stdout_lines[0] }}"
+    delegate_to: localhost
+    run_once: True
+    
+  handlers:
+      - name: docker status
+        service: name=docker state=started

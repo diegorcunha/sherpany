@@ -1,0 +1,18 @@
+- hosts: masters
+  become: true
+  become_user: root
+  tasks:
+  - name: Install helm chart
+    helm:
+      chart:
+        name: nginx-stable/nginx-ingress
+        version: latest
+        source:
+          type: repo
+          location: https://kubernetes-charts.storage.googleapis.com
+      state: present
+      name: nginx-stable/nginx-ingress
+      namespace: ingress-controller
+
+
+helm install -n ingress-nginx stable/nginx-ingress --set controller.service.externalIPs[0]="185.98.123.104"
