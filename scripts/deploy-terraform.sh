@@ -25,6 +25,7 @@ ROOTDIR="$PWD"
 cd terraform-infrastructure
 
 # Applying the terraform code.
+terraform init
 terraform apply -var-file=env/$VARIABLE -auto-approve
 
 
