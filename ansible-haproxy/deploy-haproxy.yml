@@ -1,0 +1,31 @@
+---
+# This role installs HAProxy and configures it
+- hosts: loadbalancer
+  become: true
+  become_user: root
+  tasks:
+  - name: Download and install haproxy
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - haproxy
+      - socat
+
+  - name: Configure the haproxy cfg file with hosts
+    become: true
+    become_user: root
+    template: 
+      src: haproxy.cfg.j2 
+      dest: /etc/haproxy/haproxy.cfg
+      mode: "777"
+    
+  - name: restart haproxy
+  service:
+    name: haproxy
+    state: restarted    
+
+  - name: Start the haproxy service
+    service: name=haproxy state=started enabled=yes

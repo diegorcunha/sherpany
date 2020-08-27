@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"network","Source":"./modules/network","Dir":"modules/network"},{"Key":"vms","Source":"./modules/vms","Dir":"modules/vms"},{"Key":"","Source":"","Dir":"."},{"Key":"k8s","Source":"./modules/k8s","Dir":"modules/k8s"}]}
