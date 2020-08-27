@@ -38,6 +38,6 @@ frontend TL
 
 backend backend-app
     balance     roundrobin
-    {% for host in groups['masters'] %}
+    {% for host in groups['nodes'] %}
         server {{ host }} {{ host }}:{{ 80 }}
     {% endfor %}

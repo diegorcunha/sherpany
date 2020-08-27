@@ -15,7 +15,7 @@
       - curl
       - gnupg-agent
       - software-properties-common
-      - helm
+
     run_once: True
 
   - name: Add an apt signing key for Docker

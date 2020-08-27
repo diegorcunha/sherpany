@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# deploy-ansible.sh: Setup the Kubernetes Cluster.
+# deploy-ansible-k8s.sh: Setup the Kubernetes Cluster.
 #
 # Dependencies:
 #   - Ansible

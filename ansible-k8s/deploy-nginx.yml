@@ -1,7 +1,0 @@
----
-- hosts: masters
-  become: true
-  become_user: root
-  tasks:
-  - name: Install calico pod network
-    command: kubectl apply -f https://docs.projectcalico.org/v3.10/manifests/calico.yaml

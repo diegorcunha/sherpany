@@ -56,3 +56,10 @@ Because of the timeline was not possible deploy the environment using the best p
 * Limit the ssh of the Bastion only to my IP.
 * Keep only the Loadbalancer VM with the external access limiting only acessible on the Port 80/443
 * Using the Certificates to access the application using HTTPS.
+
+
+### Problems
+
+I faced some problem to deploy the Kubernetes using an external Loadbalancer like a HA Proxy and not like a service, so I needed to spend more time to learn how setup using this new approach, but I couldn't used the Floating IP, so I needed more time to find a solution.
+
+So for this problem to access the example is necessary to use the `Loadbalancer IP` `http://185.79.234.57/`

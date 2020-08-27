@@ -23,9 +23,10 @@
       mode: "777"
     
   - name: restart haproxy
-  service:
-    name: haproxy
-    state: restarted    
+    service:
+      name: haproxy
+      state: restarted
+    
 
   - name: Start the haproxy service
     service: name=haproxy state=started enabled=yes
