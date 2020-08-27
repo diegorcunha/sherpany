@@ -40,4 +40,9 @@ command scripts/deploy-ansible-haproxy.sh
 echo ""
 echo "done!"
 
+echo "Deploying the Hello World..."
+echo ""
+command scripts/deploy-hello-world.sh
+echo ""
+echo "done!"
 
