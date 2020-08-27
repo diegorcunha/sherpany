@@ -10,11 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        
-      - name: Validate the Terraform code
+        uses: hashicorp/setup-terraform@v0.1.0
         with:
           terraform_version: 0.12.20
+        
+      - name: Validate the Terraform code
         env:
           CLOUDSCALE_TOKEN: ${{ secrets.CLOUDSCALE_TOKEN }}
         run: |
