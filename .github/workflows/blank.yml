@@ -27,7 +27,6 @@ jobs:
         env:
           CLOUDSCALE_TOKEN: ${{ secrets.CLOUDSCALE_TOKEN }}
         run: |
-          sudo apt install jq
-          export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
-          ./deployment.sh dev-environment.tfvars
+          sudo export CLOUDSCALE_TOKEN=$CLOUDSCALE_TOKEN
+          sudo ./deployment.sh dev-environment.tfvars
           
